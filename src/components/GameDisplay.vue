@@ -9,7 +9,8 @@
     <template v-else>
       <h1>{{ quiz }}</h1>
       <div>
-        score:<span>{{ score }}</span> miss:<span>{{ miss }}</span>
+        score:<span>{{ score }}</span> miss:<span>{{ miss }}</span> time
+        left:<span>{{ timeLimit }}</span>
       </div>
     </template>
   </div>
@@ -28,33 +29,32 @@ export default {
       quiz: "quiz",
       score: 0,
       miss: 0,
-      loc: 0
+      loc: 0,
+      timeLimit: 3000
     };
   },
   computed: {
-    // quiz() {
-    //   // qmakeQuiz()の値からquizを作って表示させる
-    //   return this.makeQuiz();
-    // }
-    // quiz: {
-    //   // getter 関数
-    //   get: function() {
-    //     return this.makeQuiz;
-    //   },
-    //   // setter 関数
-    //   set: function(newValue) {
-    //     var names = newValue.split(" ");
-    //     this.firstName = names[0];
-    //     this.lastName = names[names.length - 1];
-    //   }
-    // }
+    timer() {
+      let startTime = Date.now();
+      return startTime;
+    }
   },
-  mounted() {},
   methods: {
     startGame() {
-      if (this.isActive === false) this.isActive = true;
+      if (!this.isActive) {
+        this.isActive = true;
+      }
       this.makeQuiz();
       this.typeWord();
+      this.updateTimer();
+    },
+    updateTimer() {
+      const timeLeft = this.timer + this.timeLimit - Date.now();
+      const time = (timeLeft / 1000).toFixed(2);
+      console.log(time);
+      setTimeout(() => {
+        this.updateTimer();
+      }, 10);
     },
     makeQuiz() {
       // ランダムに単語が選ばれるようにする;
@@ -75,6 +75,7 @@ export default {
       window.addEventListener("keydown", e => {
         if (e.key === this.quiz[this.loc]) {
           this.loc++;
+          //locがquizと同じ数になるまで進むと、次の単語になるように処理する。（合っているかチェック）
           if (this.loc === this.quiz.length) {
             this.makeQuiz();
             this.loc = 0;
