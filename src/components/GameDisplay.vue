@@ -3,14 +3,14 @@
     <!-- スタート前に表示される部分 -->
     <template v-if="!isActive">
       <h1>{{ msg }}</h1>
-      <button @click="startGame()">Click to Start!</button>
+      <div>Press Space to Start!</div>
     </template>
     <!-- スタートしたら表示される部分 -->
     <template v-else>
       <h1>{{ quiz }}</h1>
       <div>
-        score:<span>{{ score }}</span> miss:<span>{{ miss }}</span> time
-        left:<span>{{ timeLimit }}</span>
+        score: <span>{{ score }}</span> miss: <span>{{ miss }}</span> time left:
+        <span>{{ timer }}</span>
       </div>
     </template>
   </div>
@@ -30,31 +30,57 @@ export default {
       score: 0,
       miss: 0,
       loc: 0,
-      timeLimit: 3000
+      timer: "0.00",
+      timeLimit: 3 * 1000,
+      startTime: ""
     };
   },
-  computed: {
-    timer() {
-      let startTime = Date.now();
-      return startTime;
-    }
+  mounted() {
+    //スペースを押すとstarGameが動く
+    window.addEventListener("keydown", e => {
+      if (e.keyCode === 32) {
+        this.startGame();
+      }
+    });
   },
   methods: {
     startGame() {
       if (!this.isActive) {
         this.isActive = true;
       }
+      //クリックしたときの時間を保持する
+      this.startTime = Date.now();
+      this.updateTimer();
+
       this.makeQuiz();
       this.typeWord();
-      this.updateTimer();
     },
     updateTimer() {
-      const timeLeft = this.timer + this.timeLimit - Date.now();
-      const time = (timeLeft / 1000).toFixed(2);
-      console.log(time);
-      setTimeout(() => {
+      const timeLeft = this.startTime + this.timeLimit - Date.now();
+      this.timer = (timeLeft / 1000).toFixed(2);
+      const timeoutId = setTimeout(() => {
         this.updateTimer();
       }, 10);
+      //ゲームオーバーの設定
+      if (timeLeft < 0) {
+        clearTimeout(timeoutId);
+        this.timer = "0.00";
+        setTimeout(() => {
+          // alert("Game Over");
+          this.showResult();
+        }, 100);
+        this.isActive = !this.isActive;
+      }
+    },
+    showResult() {
+      const accuracy =
+        this.score + this.miss === 0
+          ? 0
+          : (this.score / (this.score + this.miss)) * 100;
+      const msg = `Score: ${this.score}, Miss: ${
+        this.miss
+      }, Accuary :${accuracy.toFixed(2)}%`;
+      alert(msg);
     },
     makeQuiz() {
       // ランダムに単語が選ばれるようにする;
