@@ -1,13 +1,12 @@
 <template>
-  <div>
+  <div class="text-center">
     <!-- スタート前に表示される部分 -->
     <template v-if="!isActive">
-      <h1>{{ msg }}</h1>
-      <div>Press Space to Start!</div>
+      <v-btn class="mt-3" color="secondary">Hit Space to Start!</v-btn>
     </template>
     <!-- スタートしたら表示される部分 -->
     <template v-else>
-      <h1>{{ quiz }}</h1>
+      <h3 class="display-1">{{ quiz }}</h3>
       <div>
         score: <span>{{ score }}</span> miss: <span>{{ miss }}</span> time left:
         <span>{{ timer }}</span>
@@ -19,9 +18,6 @@
 <script>
 export default {
   name: "GameDisplay",
-  props: {
-    msg: String
-  },
   data() {
     return {
       isActive: false,

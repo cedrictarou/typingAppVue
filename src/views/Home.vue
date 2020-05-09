@@ -1,8 +1,12 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <GameDisplay msg="Welcome to my typing App" />
-  </div>
+  <v-row justify="center">
+    <div>
+      <h2 class="text-center font-weight-bold">
+        Welcome to my typing App
+      </h2>
+      <GameDisplay />
+    </div>
+  </v-row>
 </template>
 
 <script>
