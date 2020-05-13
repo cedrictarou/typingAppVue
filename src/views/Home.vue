@@ -1,8 +1,8 @@
 <template>
-  <div class="home">
+  <b-container>
     <img alt="Vue logo" src="../assets/logo.png" />
     <GameDisplay msg="Welcome to my typing App" />
-  </div>
+  </b-container>
 </template>
 
 <script>
