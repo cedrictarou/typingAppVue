@@ -2,12 +2,12 @@
   <div>
     <!-- スタート前に表示される部分 -->
     <template v-if="!isActive">
-      <h1>{{ msg }}</h1>
+      <h2>{{ msg }}</h2>
       <div>Press Space to Start!</div>
     </template>
     <!-- スタートしたら表示される部分 -->
     <template v-else>
-      <h1>{{ quiz }}</h1>
+      <h2>{{ quiz }}</h2>
       <div>
         score: <span>{{ score }}</span> miss: <span>{{ miss }}</span> time left:
         <span>{{ timer }}</span>
