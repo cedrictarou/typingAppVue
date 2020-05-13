@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <h2>Login</h2>
+    <h2>Sing up</h2>
     <b-form-group label="Your email:" label-for="input-email">
       <b-form-input
         id="input-email"
@@ -20,8 +20,8 @@
       ></b-form-input>
     </b-form-group>
 
-    <b-button type="submit" variant="primary" @click="login()"
-      >ログイン</b-button
+    <b-button type="submit" variant="primary" @click="register()"
+      >登録</b-button
     >
     <b-button type="reset" variant="danger" class="ml-2" @click="reset()"
       >リセット</b-button
@@ -32,7 +32,7 @@
 <script>
 import axios from "../axios-auth.js";
 export default {
-  name: "Login",
+  name: "SignUp",
   data() {
     return {
       form: {
@@ -42,17 +42,13 @@ export default {
     };
   },
   methods: {
-    login() {
-      console.log("clicked", this.form.email);
+    register() {
       axios
-        .post(
-          "/accounts:signInWithPassword?key=AIzaSyCCthIGG3XeQ-uoM6W0w9Ee1i4cjy6iWUM",
-          {
-            email: this.form.email,
-            password: this.form.password,
-            returnSecureToken: true
-          }
-        )
+        .post("/accounts:signUp?key=AIzaSyCCthIGG3XeQ-uoM6W0w9Ee1i4cjy6iWUM", {
+          email: this.form.email,
+          password: this.form.password,
+          returnSecureToken: true
+        })
         .then(res => {
           console.log(res);
         })
