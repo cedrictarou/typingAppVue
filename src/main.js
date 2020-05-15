@@ -15,11 +15,13 @@ Vue.use(IconsPlugin);
 Vue.config.productionTip = false;
 
 axios.defaults.baseURL =
-  "https://firestore.googleapis.com/v1/projects/typing-app-f08b8/databases/(default)/documents/words";
+  "https://firestore.googleapis.com/v1/projects/typing-app-f08b8/databases/(default)/documents";
 
-new Vue({
-  router,
-  store,
-  definitions,
-  render: h => h(App)
-}).$mount("#app");
+store.dispatch("autoLogin").then(() => {
+  new Vue({
+    router,
+    store,
+    definitions,
+    render: h => h(App)
+  }).$mount("#app");
+});
