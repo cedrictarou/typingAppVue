@@ -1,6 +1,31 @@
 <template>
   <b-container>
     <h2>this is an edit page</h2>
+    <p>You can edit your words here.</p>
+    <div class="text-right mb-3">
+      <b-button variant="outline-info" class="h2 mb-0" v-b-modal.modal-add-form>
+        <b-icon-plus-circle></b-icon-plus-circle>
+      </b-button>
+    </div>
+    <b-modal id="modal-add-form" title="Add new word">
+      <b-input v-model="newWord"></b-input>
+      <template v-slot:modal-footer="{ cancel, hide }">
+        <b-button
+          size="sm"
+          variant="outline-info"
+          @click="
+            {
+              addWord(), hide();
+            }
+          "
+        >
+          追加
+        </b-button>
+        <b-button size="sm" variant="outline-danger" @click="cancel()">
+          キャンセル
+        </b-button>
+      </template>
+    </b-modal>
     <table class="table">
       <thead>
         <tr>
@@ -11,7 +36,7 @@
       </thead>
       <tbody>
         <tr v-for="(item, index) in items" :key="item.name">
-          <td>{{ item.id.integerValue }}</td>
+          <td>{{ index + 1 }}</td>
           <td>{{ item.sentence.stringValue }}</td>
           <td>
             <b-button
@@ -69,7 +94,8 @@ export default {
         }
       })
       .then(res => {
-        console.log(res.data.documents);
+        console.log(res);
+
         for (let i = 0; i <= res.data.documents.length; i++) {
           this.items.push(res.data.documents[i].fields);
         }
@@ -84,9 +110,39 @@ export default {
     }
   },
   methods: {
+    addWord() {
+      axios
+        .post(
+          "/words",
+          {
+            fields: {
+              sentence: {
+                stringValue: this.newWord
+              }
+            }
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${this.idToken}`
+            }
+          }
+        )
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      const newData = {
+        sentence: {
+          stringValue: this.newWord
+        }
+      };
+      this.items.push(newData);
+    },
     edit(index) {
       axios
-        .put(`/words/${index}`, {
+        .put(`/words/documents[${index}]`, {
           fields: {
             sentence: {
               stringValue: this.newWord
@@ -101,8 +157,13 @@ export default {
         });
     },
     deleteItem(index) {
+      //ドキュメントの指定方法がよくわからない。。
       axios
-        .delete(`/words/${index}`)
+        .delete(`/words/${index}`, {
+          headers: {
+            Authorization: `Bearer ${this.idToken}`
+          }
+        })
         .then(res => {
           console.log(res);
         })
