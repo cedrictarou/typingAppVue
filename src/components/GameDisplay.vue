@@ -3,7 +3,9 @@
     <!-- スタート前に表示される部分 -->
     <template v-if="!isActive">
       <h2>{{ msg }}</h2>
-      <div>Press Space to Start!</div>
+      <h3>
+        <b-badge variant="info">Press Space to Start!</b-badge>
+      </h3>
     </template>
     <!-- スタートしたら表示される部分 -->
     <template v-else>

@@ -14,8 +14,9 @@
           </template>
           <template v-if="isAutentificated">
             <b-nav-item to="/">Home</b-nav-item>
+            <b-nav-item to="/edit">Edit</b-nav-item>
             <b-nav-item to="/about">About</b-nav-item>
-            <span class="logout" @click="logout()">Logout</span>
+            <b-nav-item class="logout" @click="logout()">Logout</b-nav-item>
           </template>
         </b-navbar-nav>
       </b-collapse>
