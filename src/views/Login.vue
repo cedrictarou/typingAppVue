@@ -42,7 +42,6 @@ export default {
   },
   methods: {
     login() {
-      console.log(this.form.email);
       this.$store.dispatch("login", {
         email: this.form.email,
         password: this.form.password

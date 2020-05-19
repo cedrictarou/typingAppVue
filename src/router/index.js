@@ -25,13 +25,6 @@ const routes = [
     path: "/about",
     name: "About",
     component: About
-    // beforeEnter(to, from, next) {
-    //   if (store.getters.idToken) {
-    //     next();
-    //   } else {
-    //     next("/login");
-    //   }
-    // }
   },
   {
     path: "/signup",

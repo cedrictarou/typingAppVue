@@ -1,20 +1,26 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import axios from "../axios-auth.js";
+import axiosAuth from "../axios/axios-auth";
 import router from "../router/index";
-import axiosRefresh from "../axios-refresh";
+import axiosRefresh from "../axios/axios-refresh";
+import axios from "axios";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    idToken: null
+    idToken: null,
+    words: []
   },
   getters: {
-    idToken: state => state.idToken
+    idToken: state => state.idToken,
+    words: state => state.words
   },
   mutations: {
     updateIdToken(state, idToken) {
       state.idToken = idToken;
+    },
+    updateWords(state, newWords) {
+      state.words = newWords;
     }
   },
   actions: {
@@ -36,7 +42,7 @@ export default new Vuex.Store({
       }
     },
     login({ dispatch }, authData) {
-      axios
+      axiosAuth
         .post(
           "/accounts:signInWithPassword?key=AIzaSyCCthIGG3XeQ-uoM6W0w9Ee1i4cjy6iWUM",
           {
@@ -79,7 +85,7 @@ export default new Vuex.Store({
         });
     },
     register({ dispatch }, authData) {
-      axios
+      axiosAuth
         .post("/accounts:signUp?key=AIzaSyCCthIGG3XeQ-uoM6W0w9Ee1i4cjy6iWUM", {
           email: authData.email,
           password: authData.password,
@@ -109,6 +115,21 @@ export default new Vuex.Store({
         dispatch("refreshIdToken", authData.refreshIdToken);
         this.refreshIdToken();
       }, authData.expiresIn * 1000);
+    },
+    getAllData({ commit }, idToken) {
+      // idTokenがあればデータをwordsにわたす処理
+      axios
+        .get("/words", {
+          headers: {
+            Authorization: `Bearer ${idToken}`
+          }
+        })
+        .then(res => {
+          commit("updateWords", res.data.documents);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
   modules: {}

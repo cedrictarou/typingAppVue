@@ -7,7 +7,6 @@
 
 <script>
 import GameDisplay from "../components/GameDisplay";
-import axios from "axios";
 
 export default {
   name: "Home",
@@ -15,27 +14,18 @@ export default {
     GameDisplay
   },
   data() {
-    return {
-      words: []
-    };
+    return {};
   },
   created() {
-    axios
-      .get("/words", {
-        headers: {
-          Authorization: `Bearer ${this.idToken}`
-        }
-      })
-      .then(res => {
-        this.words = res.data.documents;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    //wordsにgetしたデータをわたしたい
+    this.$store.dispatch("getAllData", this.idToken);
   },
   computed: {
     idToken() {
       return this.$store.getters.idToken;
+    },
+    words() {
+      return this.$store.getters.words;
     }
   }
 };
