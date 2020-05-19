@@ -8,7 +8,7 @@
       </b-button>
     </div>
     <b-modal id="modal-add-form" title="Add new word">
-      <b-input v-model="newWord"></b-input>
+      <b-input v-model="newSentence"></b-input>
       <template v-slot:modal-footer="{ cancel, hide }">
         <b-button
           size="sm"
@@ -35,9 +35,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in items" :key="item.name">
+        <tr v-for="(word, index) in words" :key="word.name">
           <td>{{ index + 1 }}</td>
-          <td>{{ item.sentence.stringValue }}</td>
+          <td>{{ word.fields.sentence.stringValue }}</td>
+          <!-- <td>{{ word.name }}</td> -->
           <td>
             <b-button
               variant="outline-info"
@@ -45,7 +46,7 @@
               >編集</b-button
             >
             <b-modal :id="`bv-modal-${index}`" title="編集">
-              <b-input v-model="item.sentence.stringValue"></b-input>
+              <b-input v-model="word.fields.sentence.stringValue"></b-input>
               <template v-slot:modal-footer="{ cancel, hide }">
                 <b-button
                   size="sm"
@@ -82,31 +83,19 @@ export default {
   name: "Edit",
   data() {
     return {
-      items: [],
-      newWord: ""
+      newSentence: ""
     };
   },
   created() {
-    axios
-      .get("/words", {
-        headers: {
-          Authorization: `Bearer ${this.idToken}`
-        }
-      })
-      .then(res => {
-        console.log(res);
-
-        for (let i = 0; i <= res.data.documents.length; i++) {
-          this.items.push(res.data.documents[i].fields);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.$store.dispatch("getAllData", this.idToken);
+    console.log(this.words);
   },
   computed: {
     idToken() {
       return this.$store.getters.idToken;
+    },
+    words() {
+      return this.$store.getters.words;
     }
   },
   methods: {
@@ -117,7 +106,7 @@ export default {
           {
             fields: {
               sentence: {
-                stringValue: this.newWord
+                stringValue: this.newSentence
               }
             }
           },
@@ -133,45 +122,45 @@ export default {
         .catch(err => {
           console.log(err);
         });
-      const newData = {
-        sentence: {
-          stringValue: this.newWord
-        }
-      };
-      this.items.push(newData);
-    },
-    edit(index) {
-      axios
-        .put(`/words/documents[${index}]`, {
-          fields: {
-            sentence: {
-              stringValue: this.newWord
-            }
-          }
-        })
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    deleteItem(index) {
-      //ドキュメントの指定方法がよくわからない。。
-      axios
-        .delete(`/words/${index}`, {
-          headers: {
-            Authorization: `Bearer ${this.idToken}`
-          }
-        })
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-      this.items.splice(index, 1);
+      // const newData = {
+      //   sentence: {
+      //     stringValue: this.newSentence
+      //   }
+      // };
+      // this.words.push(newData);
     }
+    // edit(index) {
+    //   axios
+    //     .put(`words[${index}].name`, {
+    //       fields: {
+    //         sentence: {
+    //           stringValue: this.newWord
+    //         }
+    //       }
+    //     })
+    //     .then(res => {
+    //       console.log(res);
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // },
+    // deleteItem(index) {
+    //   //ドキュメントの指定方法がよくわからない。。
+    //   axios
+    //     .delete(`words[${index}].name`, {
+    //       headers: {
+    //         Authorization: `Bearer ${this.idToken}`
+    //       }
+    //     })
+    //     .then(res => {
+    //       console.log(res);
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    //   // this.items.splice(index, 1);
+    // }
   }
 };
 </script>
