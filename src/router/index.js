@@ -1,6 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import About from "../views/About.vue";
+import Edit from "../views/Edit.vue";
+import SignUp from "../views/SignUp.vue";
+import Login from "../views/Login.vue";
+import store from "../store/index";
 
 Vue.use(VueRouter);
 
@@ -8,16 +13,48 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: Home
+    component: Home,
+    beforeEnter(to, from, next) {
+      if (store.getters.idToken) {
+        next();
+      } else {
+        next("/login");
+      }
+    }
   },
   {
     path: "/about",
     name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+    component: About
+  },
+  {
+    path: "/edit",
+    name: "Edit",
+    component: Edit
+  },
+  {
+    path: "/signup",
+    name: "SignUp",
+    component: SignUp,
+    beforeEnter(to, from, next) {
+      if (store.getters.idToken) {
+        next("/");
+      } else {
+        next();
+      }
+    }
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
+    beforeEnter(to, from, next) {
+      if (store.getters.idToken) {
+        next("/");
+      } else {
+        next();
+      }
+    }
   }
 ];
 
