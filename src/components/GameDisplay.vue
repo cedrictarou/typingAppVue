@@ -2,14 +2,12 @@
   <div>
     <!-- スタート前に表示される部分 -->
     <template v-if="!isActive">
-      <h2>{{ msg }}</h2>
-      <h3>
-        <b-badge variant="info">Press Space to Start!</b-badge>
-      </h3>
+      <h1>{{ msg }}</h1>
+      <div>Press Space to Start!</div>
     </template>
     <!-- スタートしたら表示される部分 -->
     <template v-else>
-      <h2 class="quiz">{{ quiz }}</h2>
+      <h1>{{ quiz }}</h1>
       <div>
         score: <span>{{ score }}</span> miss: <span>{{ miss }}</span> time left:
         <span>{{ timer }}</span>
@@ -23,13 +21,12 @@ import { timeLimit, timer } from "../plugins/definitions";
 export default {
   name: "GameDisplay",
   props: {
-    msg: String,
-    words: Array
+    msg: String
   },
   data() {
     return {
       isActive: false,
-      // words: ["apple", "orange", "grapes"],
+      words: ["apple", "orange", "grapes"],
       quiz: "quiz",
       score: 0,
       miss: 0,
@@ -46,6 +43,10 @@ export default {
         if (this.isActive) {
           return;
         }
+        //checkAnwerの初期化したいけどうまく動かない
+        // window.removeEventListener("keydown", e => {
+        //   this.checkAnswer(e);
+        // });
         //isActiveがfalseときはゲームをスタートする
         this.startGame();
       }
@@ -77,7 +78,7 @@ export default {
       if (timeLeft < 0) {
         clearTimeout(timeoutId);
         this.timer = "0.00";
-        // timeLeftの値を0.00がになってからshowResultになってほしいので単純にタイミングをずらす。
+        // timeLeftの値を0.00がになってからshowResultになってほしいので単純にタイミングをずらしました。
         setTimeout(() => {
           this.showResult();
           this.retry();
@@ -107,7 +108,7 @@ export default {
     makeQuiz() {
       // ランダムに単語が選ばれるようにする;
       const rnd = Math.floor(Math.random() * this.words.length);
-      this.quiz = this.words[rnd].fields.sentence.stringValue;
+      this.quiz = this.words[rnd];
       return this.quiz;
     },
     updateTarget() {
@@ -149,8 +150,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.quiz {
-  font-family: "Courier New", monospace;
-  letter-spacing: 0.05em;
+h3 {
+  margin: 40px 0 0;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
 }
 </style>

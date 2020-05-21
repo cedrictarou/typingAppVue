@@ -1,32 +1,18 @@
 <template>
-  <b-container>
+  <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
-    <GameDisplay msg="Welcome to my typing App" :words="words" />
-  </b-container>
+    <GameDisplay msg="Welcome to my typing App" />
+  </div>
 </template>
 
 <script>
-import GameDisplay from "../components/GameDisplay";
+// @ is an alias to /src
+import GameDisplay from "@/components/GameDisplay.vue";
 
 export default {
   name: "Home",
   components: {
     GameDisplay
-  },
-  data() {
-    return {};
-  },
-  created() {
-    //wordsにgetしたデータをわたしたい
-    this.$store.dispatch("getAllData", this.idToken);
-  },
-  computed: {
-    idToken() {
-      return this.$store.getters.idToken;
-    },
-    words() {
-      return this.$store.getters.words;
-    }
   }
 };
 </script>
