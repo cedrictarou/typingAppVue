@@ -83,12 +83,15 @@ export default {
   name: "Edit",
   data() {
     return {
-      newSentence: ""
+      newSentence: "",
+      items: []
     };
   },
   created() {
     this.$store.dispatch("getAllData", this.idToken);
-    console.log(this.words);
+    setTimeout(() => {
+      console.log(this.words);
+    }, 100);
   },
   computed: {
     idToken() {
@@ -105,9 +108,7 @@ export default {
           "/words",
           {
             fields: {
-              sentence: {
-                stringValue: this.newSentence
-              }
+              sentence: { stringValue: this.newSentence }
             }
           },
           {
@@ -122,45 +123,26 @@ export default {
         .catch(err => {
           console.log(err);
         });
-      // const newData = {
-      //   sentence: {
-      //     stringValue: this.newSentence
-      //   }
-      // };
-      // this.words.push(newData);
+      //画面上では追加されたように表示するための処理
+    },
+    deleteItem(index) {
+      const targetUrl = "1Arp71Xz7iUCgrgjnkGz";
+      const targetSentence = this.words[index].fields.sentence.stringValue;
+      axios
+        .delete(`words/${targetUrl}`, {
+          headers: {
+            Authorization: `Bearer ${this.idToken}`
+          }
+        })
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      console.log(targetSentence);
+      this.words.splice(index, 1);
     }
-    // edit(index) {
-    //   axios
-    //     .put(`words[${index}].name`, {
-    //       fields: {
-    //         sentence: {
-    //           stringValue: this.newWord
-    //         }
-    //       }
-    //     })
-    //     .then(res => {
-    //       console.log(res);
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
-    // },
-    // deleteItem(index) {
-    //   //ドキュメントの指定方法がよくわからない。。
-    //   axios
-    //     .delete(`words[${index}].name`, {
-    //       headers: {
-    //         Authorization: `Bearer ${this.idToken}`
-    //       }
-    //     })
-    //     .then(res => {
-    //       console.log(res);
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
-    //   // this.items.splice(index, 1);
-    // }
   }
 };
 </script>
