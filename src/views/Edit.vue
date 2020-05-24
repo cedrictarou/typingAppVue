@@ -38,7 +38,6 @@
         <tr v-for="(word, index) in words" :key="word.name">
           <td>{{ index + 1 }}</td>
           <td>{{ word.fields.sentence.stringValue }}</td>
-          <!-- <td>{{ word.name }}</td> -->
           <td>
             <b-button
               variant="outline-info"
@@ -53,7 +52,7 @@
                   variant="outline-info"
                   @click="
                     {
-                      edit(index), hide();
+                      editItem(index), hide();
                     }
                   "
                 >
@@ -83,15 +82,11 @@ export default {
   name: "Edit",
   data() {
     return {
-      newSentence: "",
-      items: []
+      newSentence: ""
     };
   },
   created() {
     this.$store.dispatch("getAllData", this.idToken);
-    setTimeout(() => {
-      console.log(this.words);
-    }, 100);
   },
   computed: {
     idToken() {
@@ -103,31 +98,61 @@ export default {
   },
   methods: {
     addWord() {
+      const newItem = {
+        fields: {
+          sentence: { stringValue: this.newSentence }
+        }
+      };
       axios
-        .post(
-          "/words",
-          {
-            fields: {
-              sentence: { stringValue: this.newSentence }
-            }
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${this.idToken}`
-            }
+        .post("/words", newItem, {
+          headers: {
+            Authorization: `Bearer ${this.idToken}`
           }
-        )
+        })
+        .then(res => {
+          console.log(res);
+          this.$store.dispatch("getAllData", this.idToken);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    editItem(index) {
+      //docIdを指定するのに必要な処理
+      const name = this.words[index].name;
+      const targetUrl = name.replace(
+        "projects/typing-app-f08b8/databases/(default)/documents/words/",
+        ""
+      );
+      const editedItem = {
+        fields: {
+          sentence: {
+            stringValue: this.words[index].fields.sentence.stringValue
+          }
+        }
+      };
+      axios
+        .patch(`words/${targetUrl}`, editedItem, {
+          headers: {
+            Authorization: `Bearer ${this.idToken}`
+          }
+        })
         .then(res => {
           console.log(res);
         })
         .catch(err => {
           console.log(err);
         });
-      //画面上では追加されたように表示するための処理
+      console.log("changed", index);
     },
     deleteItem(index) {
-      const targetUrl = "1Arp71Xz7iUCgrgjnkGz";
-      const targetSentence = this.words[index].fields.sentence.stringValue;
+      //docIdを指定するのに必要な処理
+      const name = this.words[index].name;
+      const targetUrl = name.replace(
+        "projects/typing-app-f08b8/databases/(default)/documents/words/",
+        ""
+      );
+
       axios
         .delete(`words/${targetUrl}`, {
           headers: {
@@ -140,7 +165,7 @@ export default {
         .catch(err => {
           console.log(err);
         });
-      console.log(targetSentence);
+      //画面上ですぐに消してあげる処理
       this.words.splice(index, 1);
     }
   }
