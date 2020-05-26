@@ -119,7 +119,7 @@ export default new Vuex.Store({
     getAllData({ commit }, idToken) {
       // idTokenがあればデータをwordsにわたす処理
       axios
-        .get("/words", {
+        .get("projects/typing-app-f08b8/databases/(default)/documents/words", {
           headers: {
             Authorization: `Bearer ${idToken}`
           }
