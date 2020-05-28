@@ -31,6 +31,7 @@
 import EditModal from "../components/EditModal.vue";
 import DeleteButton from "../components/DeleteButton.vue";
 import EditButton from "../components/EditButton.vue";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -39,12 +40,7 @@ export default {
     EditButton
   },
   computed: {
-    idToken() {
-      return this.$store.getters.idToken;
-    },
-    words() {
-      return this.$store.getters.words;
-    }
+    ...mapGetters(["idToken", "words"])
   }
 };
 </script>

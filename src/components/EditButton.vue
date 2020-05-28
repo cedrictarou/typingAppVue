@@ -5,7 +5,11 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    index: Number
+  }
+};
 </script>
 
 <style></style>
