@@ -6,17 +6,13 @@
 
 <script>
 import axios from "axios";
+import { mapGetters } from "vuex";
 export default {
   props: {
     index: Number
   },
   computed: {
-    idToken() {
-      return this.$store.getters.idToken;
-    },
-    words() {
-      return this.$store.getters.words;
-    }
+    ...mapGetters(["idToken", "words"])
   },
   methods: {
     deleteItem(index) {

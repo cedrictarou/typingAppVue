@@ -24,18 +24,14 @@
 
 <script>
 import axios from "axios";
+import { mapGetters } from "vuex";
 export default {
   props: {
     index: Number,
     word: Object
   },
   computed: {
-    idToken() {
-      return this.$store.getters.idToken;
-    },
-    words() {
-      return this.$store.getters.words;
-    }
+    ...mapGetters(["idToken", "words"])
   },
   methods: {
     editItem(index) {

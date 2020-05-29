@@ -24,14 +24,10 @@
 
 <script>
 import axios from "axios";
+import { mapGetters } from "vuex";
 export default {
   computed: {
-    idToken() {
-      return this.$store.getters.idToken;
-    },
-    words() {
-      return this.$store.getters.words;
-    }
+    ...mapGetters(["idToken", "words"])
   },
   data() {
     return {
