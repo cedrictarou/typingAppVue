@@ -11,7 +11,7 @@
       <tbody>
         <tr v-for="(word, index) in words" :key="word.name">
           <td>{{ index + 1 }}</td>
-          <td>{{ word.fields.sentence.stringValue }}</td>
+          <td>{{ word.document.fields.sentence.stringValue }}</td>
           <td>
             <edit-button :index="index"></edit-button>
             <delete-button :index="index"></delete-button>

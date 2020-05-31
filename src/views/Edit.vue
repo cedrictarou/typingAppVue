@@ -1,5 +1,9 @@
 <template>
   <b-container>
+    <h2>User Profile</h2>
+    <p>ser_id: {{ currentUser.id }}</p>
+    <p>user_email: {{ currentUser.email }}</p>
+    <hr />
     <h2>this is an edit page</h2>
     <p>You can edit your words and sentences here.</p>
     <add-button></add-button>
@@ -12,6 +16,7 @@
 import AddButton from "../components/AddButton.vue";
 import AddModal from "../components/AddModal.vue";
 import ItemsTable from "../components/ItemsTable.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Edit",
@@ -21,15 +26,13 @@ export default {
     ItemsTable
   },
   created() {
+    //ログインした時にuserIdを取得したい
+    this.$store.dispatch("getUserData", this.idToken);
+    //userIdを取得してからデータを取得する
     this.$store.dispatch("getAllData", this.idToken);
   },
   computed: {
-    idToken() {
-      return this.$store.getters.idToken;
-    },
-    words() {
-      return this.$store.getters.words;
-    }
+    ...mapGetters(["idToken", "words", "currentUser"])
   }
 };
 </script>

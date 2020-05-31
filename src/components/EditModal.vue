@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-modal :id="`bv-modal-${index}`" title="編集">
-      <b-input v-model="word.fields.sentence.stringValue"></b-input>
+      <b-input v-model="word.document.fields.sentence.stringValue"></b-input>
       <template v-slot:modal-footer="{ cancel, hide }">
         <b-button
           size="sm"
@@ -36,11 +36,11 @@ export default {
   methods: {
     editItem(index) {
       //docIdを指定するのに必要な処理
-      const targetUrl = this.words[index].name;
+      const targetUrl = this.words[index].document.name;
       const editedItem = {
         fields: {
           sentence: {
-            stringValue: this.words[index].fields.sentence.stringValue
+            stringValue: this.words[index].document.fields.sentence.stringValue
           }
         }
       };
@@ -56,7 +56,6 @@ export default {
         .catch(err => {
           console.log(err);
         });
-      console.log("changed", index);
     }
   }
 };
