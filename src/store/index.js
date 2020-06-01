@@ -142,7 +142,9 @@ export default new Vuex.Store({
           console.log(err);
         });
     },
-    getAllData({ commit, getters }, idToken) {
+    async getAllData({ commit, dispatch, getters }, idToken) {
+      const user = await dispatch("getUserData");
+      console.log(user);
       axios
         .post(
           "projects/typing-app-f08b8/databases/(default)/documents:runQuery",
