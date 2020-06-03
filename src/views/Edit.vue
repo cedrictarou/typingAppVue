@@ -27,9 +27,8 @@ export default {
   },
   created() {
     //ログインした時にuserIdを取得したい
-    this.$store.dispatch("getUserData", this.idToken);
+    this.$store.dispatch("getUserItems", this.idToken);
     //userIdを取得してからデータを取得する
-    this.$store.dispatch("getAllData", this.idToken);
   },
   computed: {
     ...mapGetters(["idToken", "words", "currentUser"])

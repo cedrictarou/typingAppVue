@@ -108,7 +108,7 @@ export default new Vuex.Store({
             refreshToken: res.data.refresh_token
           });
           router.push("/");
-          console.log(res);
+          // console.log(res);
         })
         .catch(err => {
           console.log(err);
@@ -127,6 +127,7 @@ export default new Vuex.Store({
       }, authData.expiresIn * 1000);
     },
     getUserData({ commit }, idToken) {
+      //ユーザー情報を取得する
       axiosUser
         .post("/accounts:lookup?key=AIzaSyCCthIGG3XeQ-uoM6W0w9Ee1i4cjy6iWUM", {
           idToken: idToken
@@ -137,14 +138,18 @@ export default new Vuex.Store({
             email: res.data.users[0].email
           };
           commit("updateUser", userData);
+          // console.log(userData);
         })
+        // thenだと成功する
+        // .then(() => {
+        //   dispatch("getAllData", idToken);
+        // })
         .catch(err => {
           console.log(err);
         });
     },
-    async getAllData({ commit, dispatch, getters }, idToken) {
-      const user = await dispatch("getUserData");
-      console.log(user);
+    getAllData({ commit, getters }, idToken) {
+      //ユーザごとのデータをクエリをポストして、wordsをアップデートする処理
       axios
         .post(
           "projects/typing-app-f08b8/databases/(default)/documents:runQuery",
@@ -171,13 +176,20 @@ export default new Vuex.Store({
         )
         .then(res => {
           for (let i = 0; i <= res.data.length; i++) {
-            console.log(res.data[i]);
             commit("updateWords", res.data);
           }
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    async getUserItems({ dispatch }, idToken) {
+      await dispatch("getUserData", idToken);
+      // await dispatch("getAllData", idToken);
+
+      setTimeout(() => {
+        dispatch("getAllData", idToken);
+      }, 1000);
     }
   },
   modules: {}
