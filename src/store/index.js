@@ -185,11 +185,11 @@ export default new Vuex.Store({
     },
     async getUserItems({ dispatch }, idToken) {
       await dispatch("getUserData", idToken);
-      // await dispatch("getAllData", idToken);
+      dispatch("getAllData", idToken);
 
-      setTimeout(() => {
-        dispatch("getAllData", idToken);
-      }, 1000);
+      //   setTimeout(() => {
+      //     dispatch("getAllData", idToken);
+      //   }, 1000);
     }
   },
   modules: {}
