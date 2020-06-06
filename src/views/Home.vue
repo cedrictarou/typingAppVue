@@ -7,6 +7,7 @@
 
 <script>
 import GameDisplay from "../components/GameDisplay";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Home",
@@ -17,16 +18,11 @@ export default {
     return {};
   },
   created() {
-    //wordsにgetしたデータをわたしたい
-    this.$store.dispatch("getAllData", this.idToken);
+    // this.$store.dispatch("getAllData", this.idToken);
+    this.$store.dispatch("getUserItems", this.idToken);
   },
   computed: {
-    idToken() {
-      return this.$store.getters.idToken;
-    },
-    words() {
-      return this.$store.getters.words;
-    }
+    ...mapGetters(["idToken", "words", "currentUser"])
   }
 };
 </script>

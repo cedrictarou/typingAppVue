@@ -126,9 +126,9 @@ export default new Vuex.Store({
         this.refreshIdToken();
       }, authData.expiresIn * 1000);
     },
-    getUserData({ commit }, idToken) {
+    async getUserData({ commit }, idToken) {
       //ユーザー情報を取得する
-      axiosUser
+      await axiosUser
         .post("/accounts:lookup?key=AIzaSyCCthIGG3XeQ-uoM6W0w9Ee1i4cjy6iWUM", {
           idToken: idToken
         })
@@ -138,12 +138,7 @@ export default new Vuex.Store({
             email: res.data.users[0].email
           };
           commit("updateUser", userData);
-          // console.log(userData);
         })
-        // thenだと成功する
-        // .then(() => {
-        //   dispatch("getAllData", idToken);
-        // })
         .catch(err => {
           console.log(err);
         });
@@ -156,6 +151,10 @@ export default new Vuex.Store({
           {
             structuredQuery: {
               from: [{ collectionId: "words" }],
+              //古い順にするクエリ
+              // orderBy: [
+              //   { field: { fieldPath: "created" }, direction: "DESCENDING" }
+              // ],
               select: {
                 fields: [{ fieldPath: "sentence" }]
               },
@@ -184,12 +183,9 @@ export default new Vuex.Store({
         });
     },
     async getUserItems({ dispatch }, idToken) {
+      // userごとに単語リストを取って来る処理
       await dispatch("getUserData", idToken);
       dispatch("getAllData", idToken);
-
-      //   setTimeout(() => {
-      //     dispatch("getAllData", idToken);
-      //   }, 1000);
     }
   },
   modules: {}

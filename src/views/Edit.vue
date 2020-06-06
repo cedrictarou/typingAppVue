@@ -1,7 +1,7 @@
 <template>
   <b-container>
     <h2>User Profile</h2>
-    <p>ser_id: {{ currentUser.id }}</p>
+    <p>user_id: {{ currentUser.id }}</p>
     <p>user_email: {{ currentUser.email }}</p>
     <hr />
     <h2>this is an edit page</h2>
@@ -26,9 +26,8 @@ export default {
     ItemsTable
   },
   created() {
-    //ログインした時にuserIdを取得したい
+    //ログインした時にuserIdのデータを取得する
     this.$store.dispatch("getUserItems", this.idToken);
-    //userIdを取得してからデータを取得する
   },
   computed: {
     ...mapGetters(["idToken", "words", "currentUser"])
