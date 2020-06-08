@@ -17,7 +17,8 @@ export default {
   methods: {
     deleteItem(index) {
       //docIdを指定するのに必要な処理
-      const targetUrl = this.words[index].name;
+      const targetUrl = this.words[index].document.name;
+      console.log(targetUrl);
       axios
         .delete(targetUrl, {
           headers: {

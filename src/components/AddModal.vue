@@ -27,7 +27,7 @@ import axios from "axios";
 import { mapGetters } from "vuex";
 export default {
   computed: {
-    ...mapGetters(["idToken", "words"])
+    ...mapGetters(["idToken", "words", "currentUser"])
   },
   data() {
     return {
@@ -38,7 +38,8 @@ export default {
     addWord() {
       const newItem = {
         fields: {
-          sentence: { stringValue: this.newSentence }
+          sentence: { stringValue: this.newSentence },
+          userId: { stringValue: this.currentUser.id }
         }
       };
       const targetUrl =

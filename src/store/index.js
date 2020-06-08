@@ -4,16 +4,23 @@ import axiosAuth from "../axios/axios-auth";
 import router from "../router/index";
 import axiosRefresh from "../axios/axios-refresh";
 import axios from "axios";
+import axiosUser from "../axios/axios-user.js";
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     idToken: null,
-    words: []
+    words: [],
+    currentUser: {
+      id: null,
+      email: null
+    }
   },
   getters: {
     idToken: state => state.idToken,
-    words: state => state.words
+    words: state => state.words,
+    currentUser: state => state.currentUser
   },
   mutations: {
     updateIdToken(state, idToken) {
@@ -21,6 +28,9 @@ export default new Vuex.Store({
     },
     updateWords(state, newWords) {
       state.words = newWords;
+    },
+    updateUser(state, newUser) {
+      state.currentUser = newUser;
     }
   },
   actions: {
@@ -98,7 +108,7 @@ export default new Vuex.Store({
             refreshToken: res.data.refresh_token
           });
           router.push("/");
-          console.log(res);
+          // console.log(res);
         })
         .catch(err => {
           console.log(err);
@@ -116,20 +126,66 @@ export default new Vuex.Store({
         this.refreshIdToken();
       }, authData.expiresIn * 1000);
     },
-    getAllData({ commit }, idToken) {
-      // idTokenがあればデータをwordsにわたす処理
-      axios
-        .get("projects/typing-app-f08b8/databases/(default)/documents/words", {
-          headers: {
-            Authorization: `Bearer ${idToken}`
-          }
+    async getUserData({ commit }, idToken) {
+      //ユーザー情報を取得する
+      await axiosUser
+        .post("/accounts:lookup?key=AIzaSyCCthIGG3XeQ-uoM6W0w9Ee1i4cjy6iWUM", {
+          idToken: idToken
         })
         .then(res => {
-          commit("updateWords", res.data.documents);
+          const userData = {
+            id: res.data.users[0].localId,
+            email: res.data.users[0].email
+          };
+          commit("updateUser", userData);
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    getAllData({ commit, getters }, idToken) {
+      //ユーザごとのデータをクエリをポストして、wordsをアップデートする処理
+      axios
+        .post(
+          "projects/typing-app-f08b8/databases/(default)/documents:runQuery",
+          {
+            structuredQuery: {
+              from: [{ collectionId: "words" }],
+              //古い順にするクエリ
+              // orderBy: [
+              //   { field: { fieldPath: "created" }, direction: "DESCENDING" }
+              // ],
+              select: {
+                fields: [{ fieldPath: "sentence" }]
+              },
+              where: {
+                fieldFilter: {
+                  field: { fieldPath: "userId" },
+                  op: "EQUAL",
+                  value: { stringValue: getters.currentUser.id }
+                }
+              }
+            }
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${idToken}`
+            }
+          }
+        )
+        .then(res => {
+          for (let i = 0; i <= res.data.length; i++) {
+            commit("updateWords", res.data);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    async getUserItems({ dispatch }, idToken) {
+      // userごとに単語リストを取って来る処理
+      await dispatch("getUserData", idToken);
+      dispatch("getAllData", idToken);
     }
   },
   modules: {}

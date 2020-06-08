@@ -29,7 +29,6 @@ export default {
   data() {
     return {
       isActive: false,
-      // words: ["apple", "orange", "grapes"],
       quiz: "quiz",
       score: 0,
       miss: 0,
@@ -107,7 +106,7 @@ export default {
     makeQuiz() {
       // ランダムに単語が選ばれるようにする;
       const rnd = Math.floor(Math.random() * this.words.length);
-      this.quiz = this.words[rnd].fields.sentence.stringValue;
+      this.quiz = this.words[rnd].document.fields.sentence.stringValue;
       return this.quiz;
     },
     updateTarget() {
