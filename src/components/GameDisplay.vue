@@ -14,6 +14,7 @@
         score: <span>{{ score }}</span> miss: <span>{{ miss }}</span> time left:
         <span>{{ timer }}</span>
       </div>
+      <div><b-button @click="addBonusTime()">Add LeftTime</b-button></div>
     </template>
   </div>
 </template>
@@ -35,7 +36,9 @@ export default {
       loc: 0,
       timer,
       timeLimit,
-      startTime: ""
+      startTime: "",
+      timeLeft: "",
+      isClear: false
     };
   },
   mounted() {
@@ -66,14 +69,14 @@ export default {
       this.typeWord();
     },
     updateTimer() {
-      const timeLeft = this.startTime + this.timeLimit - Date.now();
-      this.timer = (timeLeft / 1000).toFixed(2);
+      this.timeLeft = this.startTime + this.timeLimit - Date.now();
+      this.timer = (this.timeLeft / 1000).toFixed(2);
       const timeoutId = setTimeout(() => {
         this.updateTimer();
       }, 10);
 
       //ゲームオーバーの設定
-      if (timeLeft < 0) {
+      if (this.timeLeft < 0) {
         clearTimeout(timeoutId);
         this.timer = "0.00";
         // timeLeftの値を0.00がになってからshowResultになってほしいので単純にタイミングをずらす。
@@ -82,6 +85,11 @@ export default {
           this.retry();
         }, 100);
       }
+    },
+    addBonusTime() {
+      const bonusTime = 5*1000;
+      this.timeLeft = this.startTime + this.timeLimit - Date.now() + bonusTime;
+      console.log(this.timeLeft);
     },
     showResult() {
       const accuracy =
@@ -131,10 +139,14 @@ export default {
       // タイピング判定の処理
       if (e.key === this.quiz[this.loc]) {
         this.loc++;
+        this.isClear = false;
         //locがquizと同じ数になるまで進むと、次の単語になるように処理する。
         if (this.loc === this.quiz.length) {
           this.makeQuiz();
           this.loc = 0;
+          this.isClear = true;
+          //正解していると時間を追加して上げる。
+          // this.addBonusTime();
         }
         this.updateTarget();
         this.score++;

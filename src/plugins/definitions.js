@@ -1,4 +1,4 @@
-const timeLimit = 5 * 1000;
+const timeLimit = 10 * 1000;
 const timer = "0.00";
 
 export { timer, timeLimit };
