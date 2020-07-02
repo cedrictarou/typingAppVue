@@ -14,13 +14,12 @@
         score: <span>{{ score }}</span> miss: <span>{{ miss }}</span> time left:
         <span>{{ timer }}</span>
       </div>
-      <div><b-button @click="addBonusTime()">Add LeftTime</b-button></div>
-    </template>
+         </template>
   </div>
 </template>
 
 <script>
-import { timeLimit, timer } from "../plugins/definitions";
+import { timeLimit, timer, bonusTime } from "../plugins/definitions";
 export default {
   name: "GameDisplay",
   props: {
@@ -36,8 +35,8 @@ export default {
       loc: 0,
       timer,
       timeLimit,
+      bonusTime,
       startTime: "",
-      timeLeft: "",
       isClear: false
     };
   },
@@ -69,14 +68,15 @@ export default {
       this.typeWord();
     },
     updateTimer() {
-      this.timeLeft = this.startTime + this.timeLimit - Date.now();
-      this.timer = (this.timeLeft / 1000).toFixed(2);
+      let timeLeft;
+      timeLeft = this.timeLimit - (Date.now() - this.startTime);
+      this.timer = (timeLeft / 1000).toFixed(2);
       const timeoutId = setTimeout(() => {
         this.updateTimer();
       }, 10);
 
       //ゲームオーバーの設定
-      if (this.timeLeft < 0) {
+      if (timeLeft < 0) {
         clearTimeout(timeoutId);
         this.timer = "0.00";
         // timeLeftの値を0.00がになってからshowResultになってほしいので単純にタイミングをずらす。
@@ -87,9 +87,8 @@ export default {
       }
     },
     addBonusTime() {
-      const bonusTime = 5*1000;
-      this.timeLeft = this.startTime + this.timeLimit - Date.now() + bonusTime;
-      console.log(this.timeLeft);
+      //問題をクリアするとボーナスタイムを加える処理
+      this.timeLimit = this.timeLimit + this.bonusTime; 
     },
     showResult() {
       const accuracy =
@@ -146,7 +145,7 @@ export default {
           this.loc = 0;
           this.isClear = true;
           //正解していると時間を追加して上げる。
-          // this.addBonusTime();
+          this.addBonusTime();
         }
         this.updateTarget();
         this.score++;
