@@ -14,12 +14,12 @@
         score: <span>{{ score }}</span> miss: <span>{{ miss }}</span> time left:
         <span>{{ timer }}</span>
       </div>
-    </template>
+         </template>
   </div>
 </template>
 
 <script>
-import { timeLimit, timer } from "../plugins/definitions";
+import { timeLimit, timer, bonusTime } from "../plugins/definitions";
 export default {
   name: "GameDisplay",
   props: {
@@ -35,7 +35,9 @@ export default {
       loc: 0,
       timer,
       timeLimit,
-      startTime: ""
+      bonusTime,
+      startTime: "",
+      isClear: false
     };
   },
   mounted() {
@@ -66,7 +68,8 @@ export default {
       this.typeWord();
     },
     updateTimer() {
-      const timeLeft = this.startTime + this.timeLimit - Date.now();
+      let timeLeft;
+      timeLeft = this.timeLimit - (Date.now() - this.startTime);
       this.timer = (timeLeft / 1000).toFixed(2);
       const timeoutId = setTimeout(() => {
         this.updateTimer();
@@ -82,6 +85,10 @@ export default {
           this.retry();
         }, 100);
       }
+    },
+    addBonusTime() {
+      //問題をクリアするとボーナスタイムを加える処理
+      this.timeLimit = this.timeLimit + this.bonusTime; 
     },
     showResult() {
       const accuracy =
@@ -131,10 +138,14 @@ export default {
       // タイピング判定の処理
       if (e.key === this.quiz[this.loc]) {
         this.loc++;
+        this.isClear = false;
         //locがquizと同じ数になるまで進むと、次の単語になるように処理する。
         if (this.loc === this.quiz.length) {
           this.makeQuiz();
           this.loc = 0;
+          this.isClear = true;
+          //正解していると時間を追加して上げる。
+          this.addBonusTime();
         }
         this.updateTarget();
         this.score++;

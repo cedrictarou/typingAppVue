@@ -26,7 +26,7 @@ export default {
     ItemsTable
   },
   created() {
-    //ログインした時にuserIdのデータを取得する
+    // ログインした時にuserIdのデータを取得する
     this.$store.dispatch("getUserItems", this.idToken);
   },
   computed: {
