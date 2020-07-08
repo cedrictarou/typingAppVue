@@ -12,7 +12,7 @@
       <h2 class="quiz">{{ quiz }}</h2>
       <div>
         score: <span>{{ score }}</span> miss: <span>{{ miss }}</span> time left:
-        <span>{{ timer }}</span>
+        <span class="bonusEffect">{{ timer }}</span>
       </div>
          </template>
   </div>
@@ -162,5 +162,8 @@ export default {
 .quiz {
   font-family: "Courier New", monospace;
   letter-spacing: 0.05em;
+}
+.bonusEffect {
+  color:chocolate;
 }
 </style>
