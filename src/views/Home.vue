@@ -1,7 +1,9 @@
 <template>
   <b-container>
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <GameDisplay msg="Welcome to my typing App" :words="words" />
+    <div :class="{ successEffect: isSuccessed }">
+      <img alt="Vue logo" src="../assets/logo.png" />
+    </div>
+    <GameDisplay @turnImg="changeStatus" msg="Welcome to my typing App" :words="words" />
   </b-container>
 </template>
 
@@ -15,14 +17,31 @@ export default {
     GameDisplay
   },
   data() {
-    return {};
+    return {
+      isSuccessed: false,
+    };
   },
   created() {
-    // this.$store.dispatch("getAllData", this.idToken);
     this.$store.dispatch("getUserItems", this.idToken);
   },
   computed: {
     ...mapGetters(["idToken", "words", "currentUser"])
+  },
+  methods: {
+    //isSuccessedをtrueにするファンクションを書く
+    async changeStatus() {
+      if(this.isSuccessed === true) {
+        //すでにtrueなら一度falseにする
+        this.isSuccessed = false;
+      }
+        this.isSuccessed = true;
+    },
   }
 };
 </script>
+<style lang="scss" scoped>
+.successEffect {
+  animation: flip;
+  animation-duration: 2s;
+}
+</style>

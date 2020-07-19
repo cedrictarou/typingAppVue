@@ -4,25 +4,29 @@
     <template v-if="!isActive">
       <h2>{{ msg }}</h2>
       <h3>
-        <b-badge variant="info" class="animate__animated animate__wobble"
-          >Press Space to Start!</b-badge
-        >
+        <b-badge
+          @click="startGame"
+          variant="info"
+          class="startEffect"
+        >Press Space or Click to Start!</b-badge>
       </h3>
     </template>
     <!-- スタートしたら表示される部分 -->
     <template v-else>
       <h2 class="quiz">{{ quiz }}</h2>
-        <div>
-          score: <span>{{ score }}</span> miss: <span>{{ miss }}</span> time
-          left:
-            <span>{{ timer }}</span>
-            <transition
-              name="custom-classes-transition"
-              enter-active-class="animate__animated animate__rubberBand"
-              leave-active-class="animate__animated animate__fadeOut">
-              <p v-if="isBonus" :class="{bonusEffect: isBonus}">+5:00</p>
-            </transition>
-        </div>
+      <div>
+        score:
+        <span>{{ score }}</span> miss:
+        <span>{{ miss }}</span> time left:
+        <span>{{ timer }}</span>
+        <transition
+          name="custom-classes-transition"
+          enter-active-class="animate__animated animate__rubberBand"
+          leave-active-class="animate__animated animate__fadeOut"
+        >
+          <p v-if="isBonus" :class="{ bonusEffect: isBonus }">+5:00</p>
+        </transition>
+      </div>
     </template>
   </div>
 </template>
@@ -33,7 +37,7 @@ export default {
   name: "GameDisplay",
   props: {
     msg: String,
-    words: Array,
+    words: Array
   },
   data() {
     return {
@@ -47,11 +51,11 @@ export default {
       bonusTime,
       isBonus: false,
       startTime: "",
-      isClear: false,
+      isClear: false
     };
   },
   mounted() {
-    window.addEventListener("keydown", (e) => {
+    window.addEventListener("keydown", e => {
       if (e.keyCode === 32) {
         //isActiveがtrueのとき処理はしない
         if (this.isActive) {
@@ -67,6 +71,7 @@ export default {
       this.loc = 0;
       this.score = 0;
       this.miss = 0;
+      this.isClear = false;
     },
     startGame() {
       this.init();
@@ -141,7 +146,7 @@ export default {
         return;
       }
       //ゲームが始まっていたら、ボタンを認識する
-      window.addEventListener("keydown", (e) => {
+      window.addEventListener("keydown", e => {
         this.checkAnswer(e);
       });
     },
@@ -158,38 +163,45 @@ export default {
           this.isClear = true;
           //正解していると時間を追加して上げる。
           this.addBonusTime();
+          //isSuccesseをtrueにするためのエミット
+          this.$emit("turnImg");
         }
         this.updateTarget();
         this.score++;
       } else {
         this.miss++;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.startEffect {
+  cursor: pointer;
+  animation: pulse;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
 .quiz {
   font-family: "Courier New", monospace;
   letter-spacing: 0.05em;
 }
 .bonusEffect {
   color: chocolate;
-  // animation-name: fadeOut;
   animation-duration: 2s;
-  transition : all 1s linear 0s;
+  transition: all 1s linear 0s;
 }
-.animate__wobble{
-  animation-delay:2s;
+.animate__wobble {
+  animation-delay: 2s;
 }
 @keyframes fadeOut {
   0% {
-      opacity:1;
-    }
+    opacity: 1;
+  }
   100% {
-      opacity:0;
+    opacity: 0;
   }
 }
 </style>
