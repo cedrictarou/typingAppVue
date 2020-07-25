@@ -1,9 +1,9 @@
 <template>
   <b-container>
-    <div :class="{ successEffect: isSuccessed }">
+    <div :class="{ turnEffect: isTurn }">
       <img alt="Vue logo" src="../assets/logo.png" />
     </div>
-    <GameDisplay @turnImg="changeStatus" msg="Welcome to my typing App" :words="words" />
+    <GameDisplay @turnVue="changeIsTurn" msg="Welcome to my typing App" :words="words" />
   </b-container>
 </template>
 
@@ -18,7 +18,8 @@ export default {
   },
   data() {
     return {
-      isSuccessed: false,
+      //vueアイコンの動きを制御する
+      isTurn: false,
     };
   },
   created() {
@@ -28,19 +29,29 @@ export default {
     ...mapGetters(["idToken", "words", "currentUser"])
   },
   methods: {
-    //isSuccessedをtrueにするファンクションを書く
-    async changeStatus() {
-      if(this.isSuccessed === true) {
+    //isTurnをtrueにするファンクションを書く
+    async changeIsTurn() {
+      if(this.isTurn) {
         //すでにtrueなら一度falseにする
-        this.isSuccessed = false;
+        this.isTurn = false;
       }
-        this.isSuccessed = true;
+        //成功するとVueアイコンが２秒かけてターンする。
+        this.isTurn = true;
+        //2秒待つ
+        await this.wait(2);
+        //2秒後にfalseに切り替える必要がある。
+        this.isTurn = false;
     },
+    wait(sec) {
+      return new Promise((resolve) => {
+       setTimeout(resolve, sec*1000); 
+      });
+    }
   }
 };
 </script>
 <style lang="scss" scoped>
-.successEffect {
+.turnEffect {
   animation: flip;
   animation-duration: 2s;
 }

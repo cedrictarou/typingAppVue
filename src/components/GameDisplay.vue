@@ -24,7 +24,7 @@
           enter-active-class="animate__animated animate__rubberBand"
           leave-active-class="animate__animated animate__fadeOut"
         >
-          <p v-if="isBonus" :class="{ bonusEffect: isBonus }">+5:00</p>
+          <p v-if="isBonus" :class="{ bonusEffect: isBonus }">+{{(bonusTime/1000).toFixed(2)}}</p>
         </transition>
       </div>
     </template>
@@ -164,7 +164,7 @@ export default {
           //正解していると時間を追加して上げる。
           this.addBonusTime();
           //isSuccesseをtrueにするためのエミット
-          this.$emit("turnImg");
+          this.$emit("turnVue");
         }
         this.updateTarget();
         this.score++;
