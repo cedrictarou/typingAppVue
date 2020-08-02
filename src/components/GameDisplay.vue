@@ -13,6 +13,7 @@
     </template>
     <!-- スタートしたら表示される部分 -->
     <template v-else>
+      <span>Quiz{{quizNum}}</span>
       <h2 class="quiz">{{ quiz }}</h2>
       <div>
         score:
@@ -51,7 +52,9 @@ export default {
       bonusTime,
       isBonus: false,
       startTime: "",
-      isClear: false
+      isClear: false,
+      quizNum: 1,
+      unsolvedQs: [],
     };
   },
   mounted() {
@@ -81,6 +84,8 @@ export default {
       this.updateTimer();
       this.makeQuiz();
       this.typeWord();
+
+
     },
     updateTimer() {
       let timeLeft;
@@ -97,7 +102,7 @@ export default {
         // timeLeftの値を0.00がになってからshowResultになってほしいので単純にタイミングをずらす。
         setTimeout(() => {
           this.showResult();
-          this.retry();
+          // this.retry();
         }, 100);
       }
     },
@@ -107,30 +112,35 @@ export default {
       this.timeLimit = this.timeLimit + this.bonusTime;
     },
     showResult() {
+      const msg = "Do you want to try again?";
       const accuracy =
         this.score + this.miss === 0
           ? 0
           : (this.score / (this.score + this.miss)) * 100;
       const result = `Score: ${this.score}, Miss: ${
-        this.miss
-      }, Accuary :${accuracy.toFixed(2)}%`;
+        this.miss}, Accuary :${accuracy.toFixed(2)}? \n${msg}`;
       alert(result);
-    },
-    retry() {
-      const msg = "Try again?";
-      const replay = confirm(msg);
-      if (replay) {
-        this.init();
-        this.isActive = false;
-        //強制的にリロードさせる
-        location.reload();
-      }
+      location.reload();
     },
     makeQuiz() {
       // ランダムに単語が選ばれるようにする;
       const rnd = Math.floor(Math.random() * this.words.length);
+      this.unsolvedQs = this.words;
       this.quiz = this.words[rnd].document.fields.sentence.stringValue;
+      console.log(this.unsolvedQs);
+      //unsolvedQsから外される処理。
+      this.solvedQs(rnd);
+      //問題をすべてクリアすると結果を表示する処理。
+      if(this.unsolvedQs.length === 0 ) {
+        const msg = "Nice work!!";
+        alert(msg);
+        this.showResult();
+      }
       return this.quiz;
+    },
+    solvedQs(index) {
+      //クリアした問題は配列から削る
+      this.unsolvedQs.splice(index,1);
     },
     updateTarget() {
       //正解した文字を＿に変えていく処理
@@ -163,6 +173,8 @@ export default {
           this.isClear = true;
           //正解していると時間を追加して上げる。
           this.addBonusTime();
+          //正解しているとquizNumを増やす
+          this.quizNum += 1;
           //isSuccesseをtrueにするためのエミット
           this.$emit("turnVue");
         }
