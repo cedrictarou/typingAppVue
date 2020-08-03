@@ -1,11 +1,11 @@
 <template>
   <b-container>
+    <h2>This is an edit page</h2>
+    <p>You can edit your words and sentences here.</p>
+    <hr />
     <h2>User Profile</h2>
     <p>user_id: {{ currentUser.id }}</p>
     <p>user_email: {{ currentUser.email }}</p>
-    <hr />
-    <h2>this is an edit page</h2>
-    <p>You can edit your words and sentences here.</p>
     <add-button></add-button>
     <add-modal></add-modal>
     <items-table></items-table>

@@ -1,7 +1,9 @@
 <template>
   <b-container>
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <GameDisplay msg="Welcome to my typing App" :words="words" />
+    <div :class="{ turnEffect: isTurn }">
+      <img alt="Vue logo" src="../assets/logo.png" />
+    </div>
+    <GameDisplay @turnVue="toggleIsTurn" msg="Welcome to my typing App" :words="words" />
   </b-container>
 </template>
 
@@ -15,14 +17,42 @@ export default {
     GameDisplay
   },
   data() {
-    return {};
+    return {
+      //vueアイコンの動きを制御する
+      isTurn: false,
+    };
   },
   created() {
-    // this.$store.dispatch("getAllData", this.idToken);
     this.$store.dispatch("getUserItems", this.idToken);
   },
   computed: {
     ...mapGetters(["idToken", "words", "currentUser"])
+  },
+  methods: {
+    //isTurnをtrueにするファンクションを書く
+    async toggleIsTurn() {
+      if(this.isTurn) {
+        //すでにtrueなら一度falseにする
+        this.isTurn = false;
+      }
+        //成功するとVueアイコンが２秒かけてターンする。
+        this.isTurn = true;
+        //2秒待つ
+        await this.wait(2);
+        //2秒後にfalseに切り替える必要がある。
+        this.isTurn = false;
+    },
+    wait(sec) {
+      return new Promise((resolve) => {
+       setTimeout(resolve, sec*1000); 
+      });
+    }
   }
 };
 </script>
+<style lang="scss" scoped>
+.turnEffect {
+  animation: flip;
+  animation-duration: 2s;
+}
+</style>
