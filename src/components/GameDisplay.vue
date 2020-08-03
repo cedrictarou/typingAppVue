@@ -54,7 +54,7 @@ export default {
       startTime: "",
       isClear: false,
       quizNum: 1,
-      unsolvedQs: [],
+      unsolvedQs: []
     };
   },
   mounted() {
@@ -84,8 +84,6 @@ export default {
       this.updateTimer();
       this.makeQuiz();
       this.typeWord();
-
-
     },
     updateTimer() {
       let timeLeft;
@@ -118,7 +116,8 @@ export default {
           ? 0
           : (this.score / (this.score + this.miss)) * 100;
       const result = `Score: ${this.score}, Miss: ${
-        this.miss}, Accuary :${accuracy.toFixed(2)}? \n${msg}`;
+        this.miss
+      }, Accuary :${accuracy.toFixed(2)}% \n${msg}`;
       alert(result);
       location.reload();
     },
@@ -127,11 +126,10 @@ export default {
       const rnd = Math.floor(Math.random() * this.words.length);
       this.unsolvedQs = this.words;
       this.quiz = this.words[rnd].document.fields.sentence.stringValue;
-      console.log(this.unsolvedQs);
       //unsolvedQsから外される処理。
       this.solvedQs(rnd);
       //問題をすべてクリアすると結果を表示する処理。
-      if(this.unsolvedQs.length === 0 ) {
+      if (!this.unsolvedQs.length) {
         const msg = "Nice work!!";
         alert(msg);
         this.showResult();
@@ -140,7 +138,7 @@ export default {
     },
     solvedQs(index) {
       //クリアした問題は配列から削る
-      this.unsolvedQs.splice(index,1);
+      this.unsolvedQs.splice(index, 1);
     },
     updateTarget() {
       //正解した文字を＿に変えていく処理

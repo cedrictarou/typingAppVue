@@ -3,7 +3,7 @@
     <div :class="{ turnEffect: isTurn }">
       <img alt="Vue logo" src="../assets/logo.png" />
     </div>
-    <GameDisplay @turnVue="changeIsTurn" msg="Welcome to my typing App" :words="words" />
+    <GameDisplay @turnVue="toggleIsTurn" msg="Welcome to my typing App" :words="words" />
   </b-container>
 </template>
 
@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     //isTurnをtrueにするファンクションを書く
-    async changeIsTurn() {
+    async toggleIsTurn() {
       if(this.isTurn) {
         //すでにtrueなら一度falseにする
         this.isTurn = false;
