@@ -1,13 +1,17 @@
 <template>
   <div>
     <b-navbar toggleable="lg" type="dark" variant="info" fixed="top">
-      <b-navbar-brand href="#">TypingApp</b-navbar-brand>
+      <b-navbar-brand to="/" tag="h1">
+        <b-icon-laptop shift-v="-1.5"></b-icon-laptop>
+        TypingApp</b-navbar-brand
+      >
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <template v-if="!isAutentificated">
+            <b-nav-item to="/">Home</b-nav-item>
             <b-nav-item to="/about">About</b-nav-item>
             <b-nav-item to="/signup">Sign up</b-nav-item>
             <b-nav-item to="/login">Login</b-nav-item>
@@ -29,13 +33,13 @@ export default {
   computed: {
     isAutentificated() {
       return this.$store.getters.idToken !== null;
-    }
+    },
   },
   methods: {
     logout() {
       this.$store.dispatch("logout");
-    }
-  }
+    },
+  },
 };
 </script>
 

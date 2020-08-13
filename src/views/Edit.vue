@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import AddButton from "../components/AddButton.vue";
-import AddModal from "../components/AddModal.vue";
-import ItemsTable from "../components/ItemsTable.vue";
+import AddButton from "@/components/Edit/AddButton.vue";
+import AddModal from "@/components/Edit/AddModal.vue";
+import ItemsTable from "@/components/Edit/ItemsTable.vue";
 import { mapGetters } from "vuex";
 
 export default {

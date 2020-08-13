@@ -28,9 +28,9 @@
 </template>
 
 <script>
-import EditModal from "../components/EditModal.vue";
-import DeleteButton from "../components/DeleteButton.vue";
-import EditButton from "../components/EditButton.vue";
+import EditModal from "@/components/Edit/EditModal.vue";
+import DeleteButton from "@/components/Edit/DeleteButton.vue";
+import EditButton from "@/components/Edit/EditButton.vue";
 import { mapGetters } from "vuex";
 
 export default {

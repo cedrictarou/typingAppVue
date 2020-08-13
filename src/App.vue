@@ -11,8 +11,7 @@
   </div>
 </template>
 <script>
-import NavBar from "./components/NavBar";
-
+import NavBar from "./components/Navigation/NavBar";
 export default {
   components: {
     NavBar
