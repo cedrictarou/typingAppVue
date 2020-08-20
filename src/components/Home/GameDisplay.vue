@@ -3,35 +3,31 @@
     <!-- スタート前に表示される部分 -->
     <template v-if="!isActive">
       <div>
-        <h2>
-          <vue-typer
-            class="typing-color"
-            :text="[
-              'Type your favorite words.',
-              'And check \n how fast you can type.',
-              'Without knowing, \n you will remember.',
-            ]"
-            :repeat="Infinity"
-            :shuffle="false"
-            initial-action="typing"
-            :pre-type-delay="70"
-            :type-delay="70"
-            :pre-erase-delay="2000"
-            :erase-delay="250"
-            erase-style="select-all"
-            :erase-on-complete="false"
-            caret-animation="expand"
-          ></vue-typer>
-        </h2>
-        <h3>
-          <div class="mt-3">
-            <b-badge @click="startGame" variant="info" class="startEffect"
-              >Press Space or Click to Start!</b-badge
-            >
+        <div>
+          <div class="lead typer-height">
+            <vue-typer
+              :text="[
+                'Type your favorite words.',
+                'And try \n how fast you can type.',
+                'Without knowing, \n you will remember.',
+              ]"
+              :repeat="Infinity"
+              :shuffle="false"
+              initial-action="typing"
+              :pre-type-delay="70"
+              :type-delay="70"
+              :pre-erase-delay="2000"
+              :erase-delay="250"
+              erase-style="select-all"
+              :erase-on-complete="false"
+              caret-animation="expand"
+            ></vue-typer>
           </div>
-        </h3>
+          <b-button variant="info" @click="startGame" class="startEffect mt-1">Press Space or Click to Start!</b-button>
+        </div>
+ 
         <template v-if="!isAutentificated">
-          <hr />
+          <div class="border-top mt-3 mb-3"></div>
           <p>Add or Edit on your own with...</p>
           <b-button
             size="sm"
@@ -258,13 +254,16 @@ export default {
 .vue-typer .custom.char.typed {
   color: #607d8b;
 }
-
+.typer-height {
+  height: 4rem;
+}
 .startEffect {
   cursor: pointer;
   animation: pulse;
   animation-duration: 2s;
   animation-iteration-count: infinite;
 }
+
 .quiz {
   font-family: "Courier New", monospace;
   letter-spacing: 0.05em;
@@ -285,4 +284,5 @@ export default {
     opacity: 0;
   }
 }
+
 </style>
