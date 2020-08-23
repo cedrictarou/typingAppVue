@@ -13,13 +13,6 @@ const routes = [{
         path: "/",
         name: "Home",
         component: Home,
-        beforeEnter(to, from, next) {
-            if (store.getters.idToken) {
-                next();
-            } else {
-                next("/login");
-            }
-        }
     },
     {
         path: "/about",
@@ -29,7 +22,14 @@ const routes = [{
     {
         path: "/edit",
         name: "Edit",
-        component: Edit
+        component: Edit,
+        beforeEnter(to, from, next) {
+            if (store.getters.idToken) {
+                next();
+            } else {
+                next("/login");
+            }
+        }
     },
     {
         path: "/signup",

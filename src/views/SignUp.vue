@@ -26,6 +26,15 @@
     <b-button type="reset" variant="danger" class="ml-2" @click="reset()"
       >リセット</b-button
     >
+    <hr />
+    <b-button
+      size="sm"
+      type="reset"
+      variant="outline-info"
+      class="ml-2"
+      @click="$router.push('/login')"
+      >Loginはこちら</b-button
+    >
   </b-container>
 </template>
 
@@ -36,23 +45,23 @@ export default {
     return {
       form: {
         email: "",
-        password: ""
-      }
+        password: "",
+      },
     };
   },
   methods: {
     register() {
       this.$store.dispatch("register", {
         email: this.form.email,
-        password: this.form.password
+        password: this.form.password,
       });
       this.reset();
     },
     reset() {
       this.form.email = "";
       this.form.password = "";
-    }
-  }
+    },
+  },
 };
 </script>
 

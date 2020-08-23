@@ -7,6 +7,11 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import axios from "axios";
 import VAnimateCss from 'animate.css';
+import VueTyperPlugin from 'vue-typer';
+
+//タイピングエフェクト
+Vue.use(VueTyperPlugin);
+
 // Install Animate.css
 Vue.use(VAnimateCss);
 

@@ -16,7 +16,6 @@ const mutations = {
 };
 const actions = {
     async getUserData({ commit }, idToken) {
-        // ユーザー情報を取得する
         await axiosUser
             .post('/accounts:lookup?key=AIzaSyCCthIGG3XeQ-uoM6W0w9Ee1i4cjy6iWUM', {
                 idToken: idToken
