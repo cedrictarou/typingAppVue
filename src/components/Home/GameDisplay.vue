@@ -2,81 +2,73 @@
   <div>
     <!-- スタート前に表示される部分 -->
     <template v-if="!isActive">
-      <div>
-        <div>
-          <div class="lead typer-height">
-            <vue-typer
-              :text="[
-                'Type your favorite words.',
-                'And try \n how fast you can type.',
-                'Without knowing, \n you will remember.',
-              ]"
-              :repeat="Infinity"
-              :shuffle="false"
-              initial-action="typing"
-              :pre-type-delay="70"
-              :type-delay="70"
-              :pre-erase-delay="2000"
-              :erase-delay="250"
-              erase-style="select-all"
-              :erase-on-complete="false"
-              caret-animation="expand"
-            ></vue-typer>
-          </div>
-          <b-button variant="info" @click="startGame" class="startEffect mt-1">Press Space or Click to Start!</b-button>
-        </div>
- 
-        <template v-if="!isAutentificated">
-          <div class="border-top mt-3 mb-3"></div>
-          <p>Add or Edit on your own with...</p>
-          <b-button
-            size="sm"
-            type="reset"
-            variant="outline-info"
-            class="ml-2"
-            to="/login"
-            >Loginはこちら</b-button
-          >
-          <b-button
-            size="sm"
-            type="reset"
-            variant="outline-info"
-            class="ml-2"
-            to="signup"
-            >Singupはこちら</b-button
-          >
-        </template>
-      </div>
+      <TypingAnimation @startButtonClicked="startGame()" />
+      <Buttons v-if="!isAutentificated" />
     </template>
     <!-- スタートしたら表示される部分 -->
     <template v-else>
+      <!-- countdownModal -->
+      <Modal v-if="countdownModal">
+        <template #header>
+          <h3>
+            <small>Ready?</small>
+          </h3>
+        </template>
+        <template #body>
+          <p class="h2">{{ sec }}</p>
+        </template>
+        <template #footer></template>
+      </Modal>
+
       <span>Quiz{{ quizNum }}</span>
       <h2 class="quiz">{{ quiz }}</h2>
-      <div>
-        score:
-        <span>{{ score }}</span> miss: <span>{{ miss }}</span> time left:
-        <span>{{ timer }}</span>
-        <transition
-          name="custom-classes-transition"
-          enter-active-class="animate__animated animate__rubberBand"
-          leave-active-class="animate__animated animate__fadeOut"
-        >
-          <p v-if="isBonus" :class="{ bonusEffect: isBonus }">
-            +{{ (bonusTime / 1000).toFixed(2) }}
-          </p>
-        </transition>
-      </div>
+      <Scores :timer="timer" :scores="{score, miss}" />
+      <transition
+        name="custom-classes-transition"
+        enter-active-class="animate__animated animate__rubberBand"
+        leave-active-class="animate__animated animate__fadeOut"
+      >
+        <p v-if="isBonus" :class="{ bonusEffect: isBonus }">+{{ (bonusTime / 1000).toFixed(2) }}</p>
+      </transition>
     </template>
-    <template></template>
+
+    <!-- resultModal -->
+    <div class="example-modal-window">
+      <Modal @close="closeResultModal" v-if="resultModal">
+        <template #header>
+          <h3>Your Result</h3>
+        </template>
+        <template #body>
+          <p>Accuracy: {{ accuracy.toFixed(2) }} %</p>
+          <p>Miss: {{ miss }}</p>
+          <p>Time: {{ timer }}</p>
+          <p>Do you want to play again?</p>
+        </template>
+        <template #footer>
+          <b-button variant="info" @click="restartGame()">Play</b-button>
+          <b-button variant="info" class="ml-3" @click="closeResultModal()">Close</b-button>
+        </template>
+      </Modal>
+    </div>
   </div>
 </template>
 
 <script>
 import { timeLimit, timer, bonusTime } from "@/plugins/definitions";
+import TypingAnimation from "@/components/Home/TypingAnimation.vue";
+import Buttons from "@/components/Home/Buttons.vue";
+import Scores from "@/components/Home/Scores.vue";
+import Modal from "@/components/Home/Modal.vue";
 export default {
   name: "GameDisplay",
   props: {
-    words: Array,
+    words: Array
+  },
+  components: {
+    TypingAnimation,
+    Buttons,
+    Scores,
+    Modal
   },
   data() {
     return {
@@ -98,12 +90,15 @@ export default {
         "orange",
         "grape",
         "I work hard.",
-        "You can do more than that.",
+        "You can do more than that."
       ],
+      resultModal: false,
+      countdownModal: false,
+      sec: 5 //countdownの時間
     };
   },
   mounted() {
-    window.addEventListener("keydown", (e) => {
+    window.addEventListener("keydown", e => {
       if (e.keyCode === 32) {
         //isActiveがtrueのとき処理はしない
         if (this.isActive) {
@@ -118,6 +113,17 @@ export default {
     isAutentificated() {
       return this.$store.getters.idToken !== null;
     },
+    accuracy() {
+      const accuracy =
+        this.score + this.miss === 0
+          ? 0
+          : (this.score / (this.score + this.miss)) * 100;
+      return accuracy;
+    },
+    rnd() {
+      let rnd = Math.floor(Math.random() * this.words.length);
+      return rnd;
+    }
   },
   methods: {
     init() {
@@ -126,14 +132,22 @@ export default {
       this.miss = 0;
       this.isClear = false;
     },
-    startGame() {
+    async startGame() {
       this.init();
       this.isActive = true;
+      this.openCountdownModal();
+      //スタートするまでに時間を作る
+      this.makeQuiz();
+      await this.countdown();
+      this.closeCountdownModal();
       //クリックしたときの時間を保持する
       this.startTime = Date.now();
       this.updateTimer();
-      this.makeQuiz();
       this.typeWord();
+    },
+    restartGame() {
+      this.closeResultModal();
+      location.reload();
     },
     updateTimer() {
       let timeLeft;
@@ -142,62 +156,41 @@ export default {
       const timeoutId = setTimeout(() => {
         this.updateTimer();
       }, 10);
-
       //ゲームオーバーの設定
-      if (timeLeft < 0) {
+      if (timeLeft < 0 || !this.unsolvedQs.length) {
         clearTimeout(timeoutId);
-        this.timer = "0.00";
+        // this.timer = "0.00";
+        this.quizNum = "";
         // timeLeftの値を0.00がになってからshowResultになってほしいので単純にタイミングをずらす。
         setTimeout(() => {
           this.showResult();
-          // this.retry();
         }, 100);
       }
     },
+
     addBonusTime() {
       //問題をクリアするとボーナスタイムを加える処理
       this.isBonus = true;
       this.timeLimit = this.timeLimit + this.bonusTime;
     },
     showResult() {
-      const msg = "Do you want to try again?";
-      const accuracy =
-        this.score + this.miss === 0
-          ? 0
-          : (this.score / (this.score + this.miss)) * 100;
-      const result = `Score: ${this.score}, Miss: ${
-        this.miss
-      }, Accuary :${accuracy.toFixed(2)}% \n${msg}`;
-      alert(result);
-      location.reload();
+      this.openResultModal();
     },
     makeQuiz() {
       // ランダムに単語が選ばれるようにする;
-      let rnd = Math.floor(Math.random() * this.words.length);
-
       if (!this.isAutentificated) {
         //ログインされていなければテスト用の問題を出す。
         this.words = this.testQs;
-        this.quiz = this.words[rnd];
+        this.quiz = this.words[this.rnd];
       } else {
         //IdTokenがあれば
-        this.quiz = this.words[rnd].document.fields.sentence.stringValue;
+        this.quiz = this.words[this.rnd].document.fields.sentence.stringValue;
       }
-
       this.unsolvedQs = this.words;
-      //unsolvedQsから外される処理。
-      this.solvedQs(rnd);
-      //問題をすべてクリアすると結果を表示する処理。
-      if (!this.unsolvedQs.length) {
-        const msg = "Nice work!!";
-        alert(msg);
-        this.showResult();
-      }
-      return this.quiz;
     },
-    solvedQs(index) {
+    solvedQs() {
       //クリアした問題は配列から削る
-      this.unsolvedQs.splice(index, 1);
+      this.unsolvedQs.splice(this.rnd, 1);
     },
     updateTarget() {
       //正解した文字を＿に変えていく処理
@@ -213,7 +206,7 @@ export default {
         return;
       }
       //ゲームが始まっていたら、ボタンを認識する
-      window.addEventListener("keydown", (e) => {
+      window.addEventListener("keydown", e => {
         this.checkAnswer(e);
       });
     },
@@ -225,6 +218,7 @@ export default {
         this.isClear = false;
         //locがquizと同じ数になるまで進むと、次の単語になるように処理する。
         if (this.loc === this.quiz.length) {
+          this.solvedQs(this.rnd);
           this.makeQuiz();
           this.loc = 0;
           this.isClear = true;
@@ -241,7 +235,35 @@ export default {
         this.miss++;
       }
     },
-  },
+    openResultModal() {
+      this.resultModal = true;
+    },
+    closeResultModal() {
+      this.resultModal = false;
+    },
+    openCountdownModal() {
+      this.countdownModal = true;
+    },
+    closeCountdownModal() {
+      this.countdownModal = false;
+    },
+    async countdown() {
+      await this.countdownTimer();
+    },
+    countdownTimer() {
+      return new Promise(resolve => {
+        this.sec -= 1;
+        const timeId = setTimeout(async () => {
+          await this.countdownTimer();
+          resolve();
+        }, 1000);
+        if (this.sec === 0) {
+          clearTimeout(timeId);
+          resolve();
+        }
+      });
+    }
+  }
 };
 </script>
 
@@ -284,5 +306,4 @@ export default {
     opacity: 0;
   }
 }
-
 </style>
