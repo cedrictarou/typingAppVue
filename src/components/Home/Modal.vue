@@ -31,7 +31,6 @@
   }
 
   &-window {
-    // background: #fff;
     border-radius: 4px;
     overflow: hidden;
   }
@@ -42,7 +41,6 @@
 
   &-footer {
     background: #ccc;
-    // padding: 10px;
     text-align: right;
   }
 }

@@ -10,9 +10,7 @@
       <!-- countdownModal -->
       <Modal v-if="countdownModal">
         <template #header>
-          <h3>
-            <small>Ready?</small>
-          </h3>
+          <h3 class="lead">Ready?</h3>
         </template>
         <template #body>
           <p class="h2">{{ sec }}</p>
