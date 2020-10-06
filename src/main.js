@@ -6,8 +6,17 @@ import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import axios from "axios";
-import VAnimateCss from 'animate.css';
-import VueTyperPlugin from 'vue-typer';
+import VAnimateCss from "animate.css";
+import VueTyperPlugin from "vue-typer";
+
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { far } from "@fortawesome/free-regular-svg-icons";
+import { fab } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+//fontawesome
+library.add(fas, far, fab);
+Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 //タイピングエフェクト
 Vue.use(VueTyperPlugin);
@@ -27,6 +36,6 @@ store.dispatch("autoLogin").then(() => {
     new Vue({
         router,
         store,
-        render: h => h(App)
+        render: (h) => h(App),
     }).$mount("#app");
 });

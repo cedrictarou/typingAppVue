@@ -3,6 +3,7 @@
     <div :class="{ turnEffect: isTurn }">
       <img alt="Vue logo" src="../assets/logo.png" />
     </div>
+    
     <GameDisplay @turnVue="toggleIsTurn" :words="words" />
     <b-modal></b-modal>
   </b-container>
