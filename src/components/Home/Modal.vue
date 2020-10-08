@@ -33,6 +33,7 @@
   &-window {
     border-radius: 4px;
     overflow: hidden;
+		width: 350px;
   }
 
   &-content {

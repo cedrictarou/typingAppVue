@@ -20,13 +20,15 @@
 
       <span>Quiz{{ quizNum }}</span>
       <h2 class="quiz">{{ quiz }}</h2>
-      <Scores :timer="timer" :scores="{score, miss}" />
+      <Scores :timer="timer" :scores="{ score, miss }" />
       <transition
         name="custom-classes-transition"
         enter-active-class="animate__animated animate__rubberBand"
         leave-active-class="animate__animated animate__fadeOut"
       >
-        <p v-if="isBonus" :class="{ bonusEffect: isBonus }">+{{ (bonusTime / 1000).toFixed(2) }}</p>
+        <p v-if="isBonus" :class="{ bonusEffect: isBonus }">
+          +{{ (bonusTime / 1000).toFixed(2) }}
+        </p>
       </transition>
     </template>
 
@@ -40,11 +42,38 @@
           <p>Accuracy: {{ accuracy.toFixed(2) }} %</p>
           <p>Miss: {{ miss }}</p>
           <p>Time: {{ timer }}</p>
-          <p>Do you want to play again?</p>
+          <div>
+            <p>Share your score with...</p>
+            <ul class="sns-button-group d-flex justify-content-around">
+              <li class="sns-button">
+                <a class="btn btn-outline-info">
+                  <font-awesome-icon :icon="['fab', 'facebook-f']" />
+                </a>
+              </li>
+              <li class="sns-button">
+                <a class="btn btn-outline-info">
+                  <font-awesome-icon :icon="['fab', 'twitter']" />
+                </a>
+              </li>
+              <li class="sns-button">
+                <a class="btn btn-outline-info">
+                  <font-awesome-icon :icon="['fab', 'instagram']" />
+                </a>
+              </li>
+              <li class="sns-button">
+                <a class="btn btn-outline-info">
+                  <font-awesome-icon :icon="['fab', 'line']" />
+                </a>
+              </li>
+            </ul>
+          </div>
+          <!-- スペースを開けたほうが見やすい -->
         </template>
         <template #footer>
-          <b-button variant="info" @click="restartGame()">Play</b-button>
-          <b-button variant="info" class="ml-3" @click="closeResultModal()">Close</b-button>
+          <b-button variant="info" @click="restartGame()">Replay</b-button>
+          <b-button variant="info" class="ml-3" @click="closeResultModal()"
+            >Close</b-button
+          >
         </template>
       </Modal>
     </div>
@@ -60,13 +89,13 @@ import Modal from "@/components/Home/Modal.vue";
 export default {
   name: "GameDisplay",
   props: {
-    words: Array
+    words: Array,
   },
   components: {
     TypingAnimation,
     Buttons,
     Scores,
-    Modal
+    Modal,
   },
   data() {
     return {
@@ -88,15 +117,15 @@ export default {
         "orange",
         "grape",
         "I work hard.",
-        "You can do more than that."
+        "You can do more than that.",
       ],
       resultModal: false,
       countdownModal: false,
-      sec: 5 //countdownの時間
+      sec: 5, //countdownの時間
     };
   },
   mounted() {
-    window.addEventListener("keydown", e => {
+    window.addEventListener("keydown", (e) => {
       if (e.keyCode === 32) {
         //isActiveがtrueのとき処理はしない
         if (this.isActive) {
@@ -121,7 +150,7 @@ export default {
     rnd() {
       let rnd = Math.floor(Math.random() * this.words.length);
       return rnd;
-    }
+    },
   },
   methods: {
     init() {
@@ -204,7 +233,7 @@ export default {
         return;
       }
       //ゲームが始まっていたら、ボタンを認識する
-      window.addEventListener("keydown", e => {
+      window.addEventListener("keydown", (e) => {
         this.checkAnswer(e);
       });
     },
@@ -249,7 +278,7 @@ export default {
       await this.countdownTimer();
     },
     countdownTimer() {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         this.sec -= 1;
         const timeId = setTimeout(async () => {
           await this.countdownTimer();
@@ -260,8 +289,8 @@ export default {
           resolve();
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -303,5 +332,15 @@ export default {
   100% {
     opacity: 0;
   }
+}
+
+//sns-button-group
+
+ul.sns-button-group {
+  padding-left: 0px;
+  margin: 0 2rem;
+}
+li.sns-button {
+  list-style-type: none;
 }
 </style>
