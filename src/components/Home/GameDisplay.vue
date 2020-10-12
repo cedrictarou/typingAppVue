@@ -89,13 +89,13 @@ import Modal from "@/components/Home/Modal.vue";
 export default {
   name: "GameDisplay",
   props: {
-    words: Array,
+    words: Array
   },
   components: {
     TypingAnimation,
     Buttons,
     Scores,
-    Modal,
+    Modal
   },
   data() {
     return {
@@ -117,15 +117,15 @@ export default {
         "orange",
         "grape",
         "I work hard.",
-        "You can do more than that.",
+        "You can do more than that."
       ],
       resultModal: false,
       countdownModal: false,
-      sec: 5, //countdownの時間
+      sec: 5 //countdownの時間
     };
   },
   mounted() {
-    window.addEventListener("keydown", (e) => {
+    window.addEventListener("keydown", e => {
       if (e.keyCode === 32) {
         //isActiveがtrueのとき処理はしない
         if (this.isActive) {
@@ -150,7 +150,7 @@ export default {
     rnd() {
       let rnd = Math.floor(Math.random() * this.words.length);
       return rnd;
-    },
+    }
   },
   methods: {
     init() {
@@ -186,7 +186,7 @@ export default {
       //ゲームオーバーの設定
       if (timeLeft < 0 || !this.unsolvedQs.length) {
         clearTimeout(timeoutId);
-        // this.timer = "0.00";
+        this.timer = "0.00";
         this.quizNum = "";
         // timeLeftの値を0.00がになってからshowResultになってほしいので単純にタイミングをずらす。
         setTimeout(() => {
@@ -194,14 +194,16 @@ export default {
         }, 100);
       }
     },
-
     addBonusTime() {
       //問題をクリアするとボーナスタイムを加える処理
       this.isBonus = true;
       this.timeLimit = this.timeLimit + this.bonusTime;
     },
     showResult() {
+      // this.isActive = false;
       this.openResultModal();
+      //文字入力をできなくしたい
+      window.removeEventListener("keydown", this.checkAnswer);
     },
     makeQuiz() {
       // ランダムに単語が選ばれるようにする;
@@ -228,14 +230,7 @@ export default {
       this.quiz = placeholder + this.quiz.substring(this.loc);
     },
     typeWord() {
-      //ゲームが始まっていなかったら処理しない
-      if (!this.isActive) {
-        return;
-      }
-      //ゲームが始まっていたら、ボタンを認識する
-      window.addEventListener("keydown", (e) => {
-        this.checkAnswer(e);
-      });
+      window.addEventListener("keydown", this.checkAnswer);
     },
     checkAnswer(e) {
       this.isBonus = false;
@@ -278,7 +273,7 @@ export default {
       await this.countdownTimer();
     },
     countdownTimer() {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         this.sec -= 1;
         const timeId = setTimeout(async () => {
           await this.countdownTimer();
@@ -289,8 +284,8 @@ export default {
           resolve();
         }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 

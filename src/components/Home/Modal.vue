@@ -7,8 +7,7 @@
           <slot name="body"></slot>
         </div>
         <footer class="mt-2">
-          <slot name="footer">
-          </slot>
+          <slot name="footer"> </slot>
         </footer>
       </div>
     </div>
@@ -33,7 +32,7 @@
   &-window {
     border-radius: 4px;
     overflow: hidden;
-		width: 350px;
+    width: 350px;
   }
 
   &-content {
@@ -47,7 +46,8 @@
 }
 
 // オーバーレイのトランジション
-.modal-enter-active, .modal-leave-active {
+.modal-enter-active,
+.modal-leave-active {
   transition: opacity 0.4s;
 
   // オーバーレイに包含されているモーダルウィンドウのトランジション
@@ -61,7 +61,8 @@
   transition: opacity 0.6s ease 0.4s;
 }
 
-.modal-enter, .modal-leave-to {
+.modal-enter,
+.modal-leave-to {
   opacity: 0;
 
   .modal-window {
