@@ -41,7 +41,6 @@
         <template #body>
           <p>Accuracy: {{ accuracy.toFixed(2) }} %</p>
           <p>Miss: {{ miss }}</p>
-          <p>Time: {{ timer }}</p>
           <div>
             <p>Share your score with...</p>
             <ul class="sns-button-group d-flex justify-content-around">
@@ -81,7 +80,8 @@
 </template>
 
 <script>
-import { timeLimit, timer, bonusTime } from "@/plugins/definitions";
+import { timer } from "@/plugins/definitions";
+import { mapGetters } from "vuex";
 import TypingAnimation from "@/components/Home/TypingAnimation.vue";
 import Buttons from "@/components/Home/Buttons.vue";
 import Scores from "@/components/Home/Scores.vue";
@@ -105,8 +105,6 @@ export default {
       miss: 0,
       loc: 0,
       timer,
-      timeLimit,
-      bonusTime,
       isBonus: false,
       startTime: "",
       isClear: false,
@@ -150,7 +148,8 @@ export default {
     rnd() {
       let rnd = Math.floor(Math.random() * this.words.length);
       return rnd;
-    }
+    },
+    ...mapGetters(["timeLimit", "bonusTime"])
   },
   methods: {
     init() {
