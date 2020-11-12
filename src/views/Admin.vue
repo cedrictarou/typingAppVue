@@ -121,8 +121,8 @@ export default {
         { id: 1, email: "user1@email.com" },
         { id: 2, email: "user2@email.com" },
         { id: 3, email: "user3@email.com" },
-        { id: 4, email: "user4@email.com" }
-      ]
+        { id: 4, email: "user4@email.com" },
+      ],
     };
   },
   computed: {
@@ -133,7 +133,7 @@ export default {
       },
       set(value) {
         this.$store.dispatch("updateTimeLimit", value);
-      }
+      },
     },
     bonusTime: {
       get() {
@@ -141,52 +141,56 @@ export default {
       },
       set(value) {
         this.$store.dispatch("updateBonusTime", value);
-      }
-    }
+      },
+    },
   },
   methods: {
-    validation(email, next) {
+    validation(email) {
       const reg = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/;
-      if (!reg.test(email)) {
+      if (reg.test(email)) {
+        // validationに問題なかったら
+        return true;
+      } else {
+        //validationに引っかかったら
         alert("emailアドレスを正しく入力してください");
-        return;
-        //間違っていたら次の処理に行かないでほしい。。
-      } else next;
+        return false;
+      }
     },
     pushEmail(email) {
-      let newEmail = email;
+      const newEmail = email;
       this.users.push({
         id: this.users.id++,
-        email: newEmail
+        email: newEmail,
       });
     },
     addNewUser() {
-      let newUser = this.userEmail;
-      this.validation(newUser, this.pushEmail(newUser));
-      this.userEmail = "";
+      const newUser = this.userEmail;
+      if (this.validation(newUser)) {
+        this.pushEmail(newUser);
+        this.userEmail = "";
+      }
     },
     doRemove(item) {
       // 削除する前に確認ダイアログを出す
-      const result = window.confirm("Are you sure?");
+      const result = confirm("Are you sure?");
       if (result) {
         this.users.splice(item, 1);
       }
     },
     doChange(item) {
       const oldEmail = this.users[item].email;
-      const editedEmail = prompt(
-        "新しいemailを入力してください",
-        `${oldEmail}`
-      );
+      const message = "新しいemailを入力してください";
+      const editedEmail = prompt(message, `${oldEmail}`);
       if (!editedEmail) {
         return;
       } else {
-        // バリデーションをする
-        this.validation(editedEmail);
-        this.users[item].email = editedEmail;
+        // バリデーションをかける
+        if (this.validation(editedEmail)) {
+          this.users[item].email = editedEmail;
+        }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
