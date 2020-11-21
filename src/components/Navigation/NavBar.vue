@@ -20,6 +20,7 @@
             <b-nav-item to="/">Home</b-nav-item>
             <b-nav-item to="/edit">Edit</b-nav-item>
             <b-nav-item to="/about">About</b-nav-item>
+            <b-nav-item to="/admin">Admin</b-nav-item>
             <b-nav-item class="logout" @click="logout()">Logout</b-nav-item>
           </template>
         </b-navbar-nav>
@@ -33,13 +34,13 @@ export default {
   computed: {
     isAutentificated() {
       return this.$store.getters.idToken !== null;
-    },
+    }
   },
   methods: {
     logout() {
       this.$store.dispatch("logout");
-    },
-  },
+    }
+  }
 };
 </script>
 
