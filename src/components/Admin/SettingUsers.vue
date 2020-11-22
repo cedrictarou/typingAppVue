@@ -64,7 +64,7 @@ export default {
   components: {},
   created() {
     // ユーザー全員のデータを取ってくるようにする。
-    // this.$store.dispatch("getUserItems", this.idToken);
+    this.$store.dispatch("getAllUsers", this.idToken);
   },
   data() {
     return {
